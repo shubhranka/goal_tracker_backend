@@ -171,6 +171,11 @@ export class GoalService {
   }
 
   private mapRowToGoal(row: RowDataPacket): Goal {
+    
+    console.log('Row data:', row);
+    console.log('Scheduled days type:', typeof row.scheduled_days);
+    console.log('Scheduled days value:', row.scheduled_days);
+    
     return {
       id: row.id,
       title: row.title,
@@ -180,7 +185,7 @@ export class GoalService {
       isCompleted: Boolean(row.is_completed),
       createdAt: row.created_at,
       completedAt: row.completed_at || undefined,
-      scheduledDays: row.scheduled_days ? JSON.parse(row.scheduled_days) : undefined,
+      scheduledDays: Array.isArray(row.scheduled_days) ? row.scheduled_days : (typeof row.scheduled_days === 'string' ? JSON.parse(row.scheduled_days) : undefined),
       oneTimeTask: row.one_time_task || undefined,
       expanded: Boolean(row.expanded),
       reminder: row.reminder || undefined
