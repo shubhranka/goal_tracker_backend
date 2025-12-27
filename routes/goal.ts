@@ -5,85 +5,10 @@ import GoalService from '../database/goalService.mysql';
 const router = Router();
 const goalService = new GoalService();
 
-// Seed data function
-const createSeedData = async () => {
-  const now = new Date();
-  const todayDay = now.getDay(); // 0 for Sunday, 1 for Monday, etc.
+router.get('/health', (_req, res) => {
+  res.json({ status: 'OK', service: 'goals-api' });
+});
 
-  const goalsToSeed: Omit<Goal, 'id'>[] = [
-    {
-      title: 'Finish Q4 Report',
-      isCompleted: true,
-      progress: 100,
-      parentId: null,
-      createdAt: new Date().setDate(now.getDate() - 5),
-      completedAt: new Date().setDate(now.getDate() - 2),
-      scheduledDays: [todayDay === 0 ? 6 : todayDay - 1], // Yesterday
-    },
-    {
-      title: 'Plan Team Offsite',
-      isCompleted: true,
-      progress: 100,
-      parentId: null,
-      createdAt: new Date().setDate(now.getDate() - 10),
-      completedAt: new Date().setDate(now.getDate() - 1),
-      scheduledDays: [todayDay], // Today
-    },
-    {
-      title: 'Develop New Feature',
-      isCompleted: false,
-      progress: 50,
-      parentId: null,
-      createdAt: new Date().setDate(now.getDate() - 2),
-      scheduledDays: [todayDay], // Today
-    },
-    {
-      title: 'Gather requirements',
-      isCompleted: true,
-      progress: 100,
-      parentId: '3',
-      createdAt: new Date().setDate(now.getDate() - 2),
-      completedAt: new Date().setDate(now.getDate() - 0),
-      scheduledDays: [todayDay], // Today
-    },
-    {
-      title: 'Daily Standup',
-      isCompleted: false,
-      progress: 0,
-      parentId: null,
-      createdAt: new Date().setDate(now.getDate() - 1),
-      scheduledDays: [], // Daily task
-    },
-    {
-      title: 'Review Code',
-      isCompleted: false,
-      progress: 0,
-      parentId: null,
-      createdAt: new Date().setDate(now.getDate() - 3),
-      scheduledDays: [1, 3, 5], // Mon, Wed, Fri
-    },
-    {
-      title: 'Weekly Sync with Manager',
-      isCompleted: false,
-      progress: 0,
-      parentId: null,
-      createdAt: new Date().setDate(now.getDate() - 7),
-      scheduledDays: [todayDay], // Today
-    },
-  ];
-
-  // Check if data already exists
-  const existingGoals = await goalService.getAllGoals();
-  if (existingGoals.length === 0) {
-    for (const goalData of goalsToSeed) {
-      await goalService.createGoal(goalData);
-    }
-    console.log('Seed data created');
-  }
-};
-
-// Initialize seed data
-createSeedData().catch(console.error);
 
 router.get('/', async (_req, res) => {
   try {
